@@ -22,7 +22,7 @@ public:
     QPoint currentPos() const;
 public slots:
     void hitTarget();
-private:
+protected:
     const QPoint m_startPos;
     const QPoint m_targetPos;
     QPoint m_currentPos;
@@ -30,6 +30,24 @@ private:
     Enemy *m_target;
     MainWindow *m_game;
     int m_damage;
+};
+class Bullet2:public Bullet
+{
+    Q_OBJECT
+public:
+    Bullet2(QPoint startPos, QPoint targetPoint, int damage, Enemy *target,
+                     MainWindow *game, const QPixmap &pic = QPixmap(":/image/bullet2.png"));
+public slots:
+    void hitTarget();
+};
+class Bullet3:public Bullet
+{
+    Q_OBJECT
+public:
+    Bullet3(QPoint startPos, QPoint targetPoint, int damage, Enemy *target,
+                     MainWindow *game, const QPixmap &pic = QPixmap(":/image/bullet3.png"));
+public slots:
+    void hitTarget();
 };
 
 #endif // BULLET_H

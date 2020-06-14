@@ -7,7 +7,10 @@ enum SoundType
     TowerPlaceSound,
     LifeLoseSound,
     LaserShootSound,
-    EnemyDestroySound
+    EnemyDestroySound,
+    TowerUpgradeSound,
+    TowerDeleteSound,
+    PushButtonSound
 };
 class AudioPlayer:public QObject
 {

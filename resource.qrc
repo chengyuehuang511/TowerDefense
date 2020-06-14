@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>image/enemy1.png</file>
-        <file>image/enemy2.png</file>
         <file>image/enemy3.png</file>
         <file>image/enemy4.png</file>
         <file>image/map1.jpg</file>
@@ -14,5 +13,19 @@
         <file>music/plant.mp3</file>
         <file>music/wave--.wav</file>
         <file>music/shoot.mp3</file>
+        <file>image/tower_up.png</file>
+        <file>image/delete_tow.png</file>
+        <file>image/tower_up1.png</file>
+        <file>music/tow_up.mp3</file>
+        <file>music/tow_delete.mp3</file>
+        <file>image/tower1_button.png</file>
+        <file>image/tower2.png</file>
+        <file>image/tower2_button.png</file>
+        <file>image/tower3.png</file>
+        <file>image/tower3_button.png</file>
+        <file>music/pushbutton.mp3</file>
+        <file>image/bullet2.png</file>
+        <file>image/bullet3.png</file>
+        <file>image/enemy2.png</file>
     </qresource>
 </RCC>

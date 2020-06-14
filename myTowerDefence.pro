@@ -32,7 +32,8 @@ SOURCES += \
     waypoint.cpp \
     enemy.cpp \
     bullet.cpp \
-    audioplayer.cpp
+    audioplayer.cpp \
+    mybutton.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -42,7 +43,8 @@ HEADERS += \
     enemy.h \
     utility.h \
     bullet.h \
-    audioplayer.h
+    audioplayer.h \
+    mybutton.h
 
 FORMS += \
         mainwindow.ui

@@ -27,6 +27,9 @@ void AudioPlayer::playSound(SoundType soundType)
         QUrl("qrc:/music/wave--.wav"),
         QUrl("qrc:/music/shoot.mp3"),
         QUrl("qrc:/music/enemy_die.mp3"),
+        QUrl("qrc:/music/tow_up.mp3"),
+        QUrl("qrc:/music/tow_delete.mp3"),
+        QUrl("qrc:/music/pushbutton.mp3")
     };
     static QMediaPlayer player;
     player.setMedia(mediasUrls[soundType]);

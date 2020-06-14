@@ -9,7 +9,7 @@
 #include <QtDebug>
 #include <QString>
 #include <QFont>
-//#include <iostream>
+#include "mybutton.h"
 using namespace std;
 class TowerPosition;
 class Tower;
@@ -32,9 +32,24 @@ MainWindow::MainWindow(QWidget *parent) :
     m_playerHP=5;
     m_playerGold=1000;
     TowerCost=300;
+    TowerUpCost=120;
     loadWave();
     m_gameWin=false;
     m_gameEnded=false;
+    TowerMode=1;
+
+    MyButton *towbtn1=new MyButton(":/image/tower1_button.png");
+    towbtn1->setParent(this);
+    towbtn1->move(40,850);
+    connect(towbtn1,&MyButton::clicked,this,&MainWindow::changetowermode1);
+    MyButton *towbtn2=new MyButton(":/image/tower2_button.png");
+    towbtn2->setParent(this);
+    towbtn2->move(40+87,850);
+    connect(towbtn2,&MyButton::clicked,this,&MainWindow::changetowermode2);
+    MyButton *towbtn3=new MyButton(":/image/tower3_button.png");
+    towbtn3->setParent(this);
+    towbtn3->move(40+87*2,850);
+    connect(towbtn3,&MyButton::clicked,this,&MainWindow::changetowermode3);
 
     QTimer *timer=new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(updateMap()));
@@ -87,12 +102,12 @@ void MainWindow::addWayPoints1()
     QPoint p[9]=
     {
         QPoint(1340,280),
-        QPoint(1340,470),
-        QPoint(1180,480),
-        QPoint(1180,760),
-        QPoint(755,760),
-        QPoint(745,260),
-        QPoint(330,280),
+        QPoint(1340,450),
+        QPoint(1180,460),
+        QPoint(1180,770),
+        QPoint(775,770),
+        QPoint(765,230),
+        QPoint(330,240),
         QPoint(320,565),
         QPoint(10,565),
     };
@@ -112,7 +127,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
     auto it=m_towerpositions.begin();
     while(it!=m_towerpositions.end())
     {
-        if(canBuyTower()&&it->containPoint(pressPos)&&!it->hasTower())//点击的点在坑内且没有塔
+        if(canBuyTower()&&it->containPoint(pressPos)&&!it->hasTower()&&TowerMode==1)//点击的点在坑内且没有塔
         {
             m_audioPlayer->playSound(TowerPlaceSound);
             m_playerGold-=TowerCost;
@@ -122,9 +137,51 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
             update();
             break;
         }
+        if(canBuyTower()&&it->containPoint(pressPos)&&!it->hasTower()&&TowerMode==2)//点击的点在坑内且没有塔
+        {
+            m_audioPlayer->playSound(TowerPlaceSound);
+            m_playerGold-=TowerCost;
+            it->setHasTower();
+            Tower *tower = new Tower2(it->centerPos(), this);
+            m_towers.push_back(tower);
+            update();
+            break;
+        }
+        if(canBuyTower()&&it->containPoint(pressPos)&&!it->hasTower()&&TowerMode==3)//点击的点在坑内且没有塔
+        {
+            m_audioPlayer->playSound(TowerPlaceSound);
+            m_playerGold-=TowerCost;
+            it->setHasTower();
+            Tower *tower = new Tower3(it->centerPos(), this);
+            m_towers.push_back(tower);
+            update();
+            break;
+        }
+        foreach(Tower *attacker,m_towers)
+        {
+            if(m_playerGold>=TowerUpCost&&attacker->towerlevel()<2&&attacker->containUpPoint(pressPos)&&it->hasTower())
+            {
+                m_audioPlayer->playSound(TowerUpgradeSound);
+                m_playerGold-=TowerUpCost;
+                attacker->setTowerLevel(2);
+                update();
+                break;
+            }
+            if(attacker->containDeletePoint(pressPos)&&it->hasTower())
+            {
+                m_audioPlayer->playSound(TowerDeleteSound);
+                m_playerGold+=200;
+                removedTower(attacker);
+                it->deleteTower();
+                update();
+                break;
+            }
+        }
         ++it;
     }
+
 }
+
 void MainWindow::drawWave(QPainter *painter)
 {
     painter->setPen(QPen(Qt::red));
@@ -141,6 +198,9 @@ void MainWindow::drawPlayerGold(QPainter *painter)
     painter->setPen(QPen(Qt::red));
     painter->drawText(QRect(650,38,500,70),QString("GOLD:%1").arg(m_playerGold));
 }
+
+
+
 void MainWindow::paintEvent(QPaintEvent *)
 {
 //    QPainter painter(this);
@@ -160,6 +220,9 @@ void MainWindow::paintEvent(QPaintEvent *)
     drawPlayerGold(&cachePainter);
     foreach (const TowerPosition &towerPos, m_towerpositions)
         towerPos.draw(&cachePainter);
+    MyButton *btn=new MyButton(":/image/tower_up.png");
+    btn->setParent(this);
+    btn->move(50,50);
     foreach(const Tower *tower,m_towers)
         tower->draw(&cachePainter);
     foreach(const WayPoint *waypoint,m_waypoints)
@@ -185,12 +248,39 @@ bool MainWindow::loadWave()
     if(m_waves>=6)
         return false;
     WayPoint *startWayPoint=m_waypoints.back();
-    int enemyStartInterval[]={1000,2500,4500,7000,10000,13500};
-    for(int i=0;i<6;++i)
+
+    const QPixmap &pic1=QPixmap(":/image/enemy1.png");
+    const QPixmap &pic2=QPixmap(":/image/enemy2.png");
+    const QPixmap &pic3=QPixmap(":/image/enemy3.png");
+    if(m_waves==0||m_waves==1)
     {
-        Enemy *enemy=new Enemy(startWayPoint,this);
-        m_enemyList.push_back(enemy);
-        QTimer::singleShot(enemyStartInterval[i],enemy,SLOT(doActivate()));
+        int enemyStartInterval[]={1000,2500,4500,7000,10000,13500};
+        for(int i=0;i<6;++i)
+        {
+            Enemy *enemy=new Enemy(startWayPoint,this,pic1);
+            m_enemyList.push_back(enemy);
+            QTimer::singleShot(enemyStartInterval[i],enemy,SLOT(doActivate()));
+        }
+    }
+    else if(m_waves==2||m_waves==3)
+    {
+        int enemyStartInterval[]={1000,2500,4000,5500,7000,8500,10000,11500,13000,14500};
+        for(int i=0;i<10;++i)
+        {
+            Enemy *enemy=new Enemy(startWayPoint,this,pic2);
+            m_enemyList.push_back(enemy);
+            QTimer::singleShot(enemyStartInterval[i],enemy,SLOT(doActivate()));
+        }
+    }
+    else
+    {
+        int enemyStartInterval[]={1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,11000,12000,13000,14000};
+        for(int i=0;i<14;++i)
+        {
+            Enemy *enemy=new Enemy(startWayPoint,this,pic3);
+            m_enemyList.push_back(enemy);
+            QTimer::singleShot(enemyStartInterval[i],enemy,SLOT(doActivate()));
+        }
     }
     return true;
 }
@@ -221,6 +311,19 @@ void MainWindow::removedBullet(Bullet *bullet)
 
     m_bulletList.removeOne(bullet);
     delete bullet;
+}
+//void MainWindow::stopBullet(Bullet *bullet)
+//{
+//    Q_ASSERT(bullet);
+
+//    m_bulletList.removeOne(bullet);
+//    bullet->stop();
+//}
+void MainWindow::removedTower(Tower *tower)
+{
+    Q_ASSERT(tower);
+    m_towers.removeOne(tower);
+    delete tower;
 }
 void MainWindow::addBullet(Bullet *bullet)
 {

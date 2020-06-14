@@ -31,3 +31,7 @@ void TowerPosition::setHasTower(bool hastower)
 {
     m_hastower=hastower;
 }
+void TowerPosition::deleteTower(bool hastower)
+{
+    m_hastower=hastower;
+}

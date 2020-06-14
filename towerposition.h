@@ -10,6 +10,7 @@ public:
     TowerPosition(QPoint pos,const QPixmap &pospic=QPixmap(":/image/tow_pos.png"));
     void draw(QPainter *painter) const;
     void setHasTower(bool hastower = true);
+    void deleteTower(bool hastower = false);
     bool hasTower() const;
     const QPoint centerPos() const;
     bool containPoint(const QPoint &pos) const;

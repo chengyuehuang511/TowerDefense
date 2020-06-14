@@ -18,10 +18,42 @@ Enemy::Enemy(WayPoint *startWayPoint, MainWindow *game, const QPixmap &pic)
     m_maxHP=40;
     m_currentHP=40;
     m_active=false;
-    m_walkingSpeed=3.0;
+    m_walkingSpeed=5.0;
     m_destinationWayPoint=startWayPoint->nextWayPoint();
     m_rotationPic=0.0;
     m_game=game;
+}
+Enemy2::Enemy2(WayPoint *startWayPoint, MainWindow *game, const QPixmap &pic)
+    :Enemy(startWayPoint,game,pic)
+{
+    m_walkingSpeed=6.0;
+    m_maxHP=50;
+    m_currentHP=m_maxHP;
+    m_active=false;
+    m_destinationWayPoint=startWayPoint->nextWayPoint();
+    m_rotationPic=180;
+    m_game=game;
+}
+Enemy3::Enemy3(WayPoint *startWayPoint, MainWindow *game, const QPixmap &pic)
+    :Enemy(startWayPoint,game,pic)
+{
+    m_walkingSpeed=6.0;
+    m_maxHP=60;
+    m_speedup=false;
+    m_currentHP=m_maxHP;
+    m_active=false;
+    m_destinationWayPoint=startWayPoint->nextWayPoint();
+    m_rotationPic=0.0;
+    m_game=game;
+}
+void Enemy3::getDamage(int damage)
+{
+    Enemy::getDamage(damage);
+    if(m_speedup==false)
+    {
+        m_speedup=true;
+        m_walkingSpeed=1.5*m_walkingSpeed;
+    }
 }
 void Enemy::draw(QPainter *painter) const
 {
@@ -50,7 +82,7 @@ void Enemy::move()
 {
     if(!m_active||m_game->m_gameEnded)
         return;
-    if(collisionWithCircle(m_pos,1,m_destinationWayPoint->pos(),1))
+    if(CollisionWithCircle(m_pos,1,m_destinationWayPoint->pos(),1))
     {
         //敌人抵达了一个航点
         if(m_destinationWayPoint->nextWayPoint())
@@ -91,6 +123,12 @@ void Enemy::getDamage(int damage)
         m_game->awardGold(200);
         getRemoved();
     }
+}
+void Enemy::slowDown()
+{
+    m_game->audioPlayer()->playSound(LaserShootSound);
+    if(m_walkingSpeed>=2.0)
+        m_walkingSpeed=2.0;
 }
 void Enemy::getAttacked(Tower *attacker)
 {

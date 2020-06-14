@@ -17,6 +17,7 @@
 #include "bullet.h"
 #include <QFont>
 #include "audioplayer.h"
+#include <QContextMenuEvent>
 //#include "iostream"
 
 class Tower;
@@ -45,9 +46,11 @@ public:
     void getHpDamage(int damage=1);
     void removedEnemy(Enemy *enemy);
     void removedBullet(Bullet *bullet);
+    void removedTower(Tower *tower);
     void addBullet(Bullet *bullet);
     QList<Enemy *> enemyList() const;
     void doGameOver();
+
     bool canBuyTower()const
     {
         if(m_playerGold>=TowerCost)
@@ -66,6 +69,9 @@ public:
     AudioPlayer* audioPlayer() const{return m_audioPlayer;}
 public slots:
     void updateMap();
+    void changetowermode1(){m_audioPlayer->playSound(PushButtonSound);TowerMode=1;}
+    void changetowermode2(){m_audioPlayer->playSound(PushButtonSound);TowerMode=2;}
+    void changetowermode3(){m_audioPlayer->playSound(PushButtonSound);TowerMode=3;}
 private:
     Ui::MainWindow *ui;
     QList<TowerPosition> m_towerpositions;
@@ -80,8 +86,10 @@ private:
     int m_playerHP;
     int m_playerGold;
     int TowerCost;
+    int TowerUpCost;
     bool m_gameWin;
     AudioPlayer* m_audioPlayer;
+    int TowerMode;
 };
 
 #endif // MAINWINDOW_H
