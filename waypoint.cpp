@@ -1,4 +1,5 @@
 #include "waypoint.h"
+#include "menu.h"
 #include<QPainter>
 #include <QPixmap>
 #include <QPoint>

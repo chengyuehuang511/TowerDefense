@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "ui_mainwindow.h"
 #include "towerposition.h"
 #include "tower.h"
 #include "waypoint.h"
@@ -28,19 +27,12 @@ class Bullet;
 class Font;
 class AudioPlayer;
 
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit MainWindow(int _scene,QWidget *parent = 0);
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *event);
     void getHpDamage(int damage=1);
@@ -66,6 +58,7 @@ public:
     void drawHP(QPainter *painter);
     void drawPlayerGold(QPainter *painter);
     bool m_gameEnded;
+    bool m_gamePaused;
     AudioPlayer* audioPlayer() const{return m_audioPlayer;}
 public slots:
     void updateMap();
@@ -73,23 +66,30 @@ public slots:
     void changetowermode2(){m_audioPlayer->playSound(PushButtonSound);TowerMode=2;}
     void changetowermode3(){m_audioPlayer->playSound(PushButtonSound);TowerMode=3;}
 private:
-    Ui::MainWindow *ui;
     QList<TowerPosition> m_towerpositions;
     QList<Tower *> m_towers;
     QList<WayPoint *> m_waypoints;
     QList<Enemy *> m_enemyList;
     QList<Bullet *> m_bulletList;
     void loadTowerPositions1();
+    void loadTowerPositions2();
     void addWayPoints1();
-    bool loadWave();
+    void addWayPoints2();
+    bool loadWave1();
+    bool loadWave2();
     int m_waves;
     int m_playerHP;
     int m_playerGold;
     int TowerCost;
     int TowerUpCost;
+    int TowerDeleteCompensation;
     bool m_gameWin;
+
     AudioPlayer* m_audioPlayer;
     int TowerMode;
+    int scene=1;
+signals:
+    void chooseback();
 };
 
 #endif // MAINWINDOW_H

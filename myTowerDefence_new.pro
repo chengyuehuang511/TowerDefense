@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2020-05-17T19:43:17
+# Project created by QtCreator 2020-06-26T13:59:57
 #
 #-------------------------------------------------
 
@@ -9,7 +9,7 @@ QT       += multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = myTowerDefence
+TARGET = myTowerDefence_new
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -26,29 +26,30 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp \
-    towerposition.cpp \
-    tower.cpp \
-    waypoint.cpp \
-    enemy.cpp \
-    bullet.cpp \
+        menu.cpp \
     audioplayer.cpp \
-    mybutton.cpp
+    bullet.cpp \
+    enemy.cpp \
+    mainwindow.cpp \
+    mybutton.cpp \
+    tower.cpp \
+    towerposition.cpp \
+    waypoint.cpp
 
 HEADERS += \
-        mainwindow.h \
-    towerposition.h \
-    tower.h \
-    waypoint.h \
-    enemy.h \
-    utility.h \
-    bullet.h \
+        menu.h \
     audioplayer.h \
-    mybutton.h
+    bullet.h \
+    enemy.h \
+    mainwindow.h \
+    mybutton.h \
+    tower.h \
+    towerposition.h \
+    utility.h \
+    waypoint.h
 
 FORMS += \
-        mainwindow.ui
+        menu.ui
 
 RESOURCES += \
     resource.qrc
-

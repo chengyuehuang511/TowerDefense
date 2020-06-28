@@ -1,6 +1,7 @@
 #include "audioplayer.h"
 #include <QDir>
 #include <QMediaPlaylist>
+#include "menu.h"
 
 AudioPlayer::AudioPlayer(QObject *parent):
     QObject(parent),m_backgroundMusic(NULL)

@@ -1,5 +1,6 @@
 #include "tower.h"
 #include "mainwindow.h"
+#include "menu.h"
 #include <QMainWindow>
 #include "towerposition.h"
 #include<QPainter>
@@ -9,8 +10,8 @@
 #include "mybutton.h"
 
 Tower::Tower(QPoint tow,MainWindow *game,const QPixmap &towpic):
-    m_tow(tow),m_game(game),m_towpic(towpic),m_attackRange(200),
-    m_damage(5),m_fireRate(500), m_rotationPic(0.0),m_chooseEnemy(NULL),
+    m_tow(tow),m_game(game),m_towpic(towpic),m_attackRange(180),
+    m_damage(3),m_fireRate(700), m_rotationPic(0.0),m_chooseEnemy(NULL),
     m_towerLevel(1)
 {
     m_towup=QPixmap(":/image/tower_up1.png");
@@ -22,7 +23,7 @@ Tower2::Tower2(QPoint tow,MainWindow *game,const QPixmap &towpic):
     Tower(tow,game,towpic)
 {
     m_attackRange=200;
-    m_damage=10;
+    m_damage=0;
     m_fireRate=500;
     m_rotationPic=0.0;
     m_towerLevel=1;
@@ -33,16 +34,26 @@ Tower2::Tower2(QPoint tow,MainWindow *game,const QPixmap &towpic):
 }
 void Tower2::shootWeapon()
 {
-    if(m_chooseEnemy->canslow())
-    {Bullet *bullet = new Bullet2(m_tow, m_chooseEnemy->pos(), m_damage, m_chooseEnemy, m_game);
-    bullet->move();
-    m_game->addBullet(bullet);}
+    if(m_chooseEnemy)
+    {
+        if(m_chooseEnemy->canslow())
+        {
+            Bullet *bullet = new Bullet2(m_tow, m_chooseEnemy->pos(), m_damage, m_chooseEnemy, m_game);
+            bullet->move();
+            m_game->addBullet(bullet);
+            m_chooseEnemy->Ice();
+            //以下3行：冰冻后解除敌人和塔的关联，塔转移到下一个目标
+            m_chooseEnemy->gotLostSight(this);
+            m_fireRateTimer->stop();
+            m_chooseEnemy=NULL;
+        }
+    }
 }
 Tower3::Tower3(QPoint tow,MainWindow *game,const QPixmap &towpic):
     Tower(tow,game,towpic)
 {
     m_attackRange=200;
-    m_damage=10;
+    m_damage=5;
     m_fireRate=500;
     m_rotationPic=0.0;
     m_towerLevel=1;
@@ -96,10 +107,19 @@ void Tower::targetKilled()
 void Tower::lostSightofEnemy()
 {
     m_chooseEnemy->gotLostSight(this);
-    if(m_chooseEnemy)
-        m_chooseEnemy=NULL;
+    m_chooseEnemy=NULL;
     m_fireRateTimer->stop();
     m_rotationPic=0.0;
+}
+void Tower::disconnectEnemyForAttack()
+{
+    if(m_chooseEnemy!=NULL)
+    {
+        m_chooseEnemy->gotLostSight(this);//与lostsightofenemy不同，需要先判断指针是否为空再进行gotlostsight，否则会是一个空指针执行函数
+        m_chooseEnemy=NULL;
+        m_fireRateTimer->stop();
+        m_rotationPic=0.0;
+    }
 }
 void Tower::checkEnemyInRange()
 {
@@ -129,6 +149,35 @@ void Tower::checkEnemyInRange()
         }
     }
 }
+void Tower2::checkEnemyInRange()
+{
+    if (m_chooseEnemy)
+    {
+        // 这种情况下,需要旋转炮台对准敌人
+        // 向量标准化
+        QVector2D normalized(m_chooseEnemy->pos()-m_tow);
+        normalized.normalize();
+        m_rotationPic=qRadiansToDegrees(qAtan2(normalized.y(),normalized.x()))-90;
+
+        // 如果敌人脱离攻击范围
+        if (!CollisionWithCircle(m_tow,m_attackRange,m_chooseEnemy->pos(),1))
+            lostSightofEnemy();
+    }
+    else
+    {
+        // 遍历敌人,看是否有敌人在攻击范围内
+        QList<Enemy *> enemyList=m_game->enemyList();
+        foreach (Enemy *enemy, enemyList)
+        {
+            if (enemy->check()==false&&CollisionWithCircle(m_tow,m_attackRange,enemy->pos(),1))
+            {
+                chooseEnemyForAttack(enemy);
+                enemy->isChecked();//check和ischecked这两个函数至关重要，因为解除关联之后如果已经冰冻的敌人还在塔的攻击范围内，又会被checkEnemyInRange，冰冻塔就又锁定到了已经冰冻的敌人，而不会转移到下一个敌人
+                break;
+            }
+        }
+    }
+}
 void Tower::setTowerLevel(int level)
 {
     m_towerLevel=level;
@@ -142,9 +191,28 @@ void Tower::setTowerLevel(int level)
     if(level==2)
     {
         //m_sprite=QPixmap(":/image/towerUpgrade1.png");
-        m_attackRange=300;
-        m_damage=10;
-        m_fireRate=200;
+        m_attackRange=250;
+        m_damage=5;
+        m_fireRate=600;
+    }
+}
+void Tower2::setTowerLevel(int level)
+{
+    m_towerLevel=level;
+    if(level==2)
+    {
+        m_attackRange=250;
+        m_fireRate=500;
+    }
+}
+void Tower3::setTowerLevel(int level)
+{
+    m_towerLevel=level;
+    if(level==2)
+    {
+        m_attackRange=280;
+        m_fireRate=450;
+        m_damage=7;
     }
 }
 bool Tower::containUpPoint(const QPoint &pos) const

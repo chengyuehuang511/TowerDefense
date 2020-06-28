@@ -13,25 +13,26 @@ class MainWindow;
 class Bullet;
 class Enemy;
 
-class Tower:public QObject
+class Tower:public QObject//会出现undefeined reference to vtable for Tower，应当删除build文件重新加载
 {
     Q_OBJECT
 public:
     Tower(QPoint tow, MainWindow *game,const QPixmap &towpic=QPixmap(":/image/tower1.png"));
-    void draw(QPainter *painter) const;
+    virtual void draw(QPainter *painter) const;
     void targetKilled();
-    void attackEnemy();
-    void chooseEnemyForAttack(Enemy *enemy);
+    virtual void attackEnemy();
+    virtual void chooseEnemyForAttack(Enemy *enemy);
     void removeBullet();
-    void lostSightofEnemy();
-    void checkEnemyInRange();
-    void setTowerLevel(int level);
+    virtual void lostSightofEnemy();
+    void disconnectEnemyForAttack();
+    virtual void checkEnemyInRange();
+    virtual void setTowerLevel(int level);
     bool containUpPoint(const QPoint &pos)const;
     bool containDeletePoint(const QPoint &pos)const;
     QPoint towerpos(){return m_tow;}
     int towerlevel(){return m_towerLevel;}
 public slots:
-    void shootWeapon();
+    virtual void shootWeapon();
 protected:
     int m_towerType=1;
     int m_towerLevel;
@@ -53,8 +54,9 @@ class Tower2:public Tower
     Q_OBJECT
 public:
     Tower2(QPoint pos,MainWindow *game,const QPixmap &towpic2=QPixmap(":/image/tower2.png"));
-    void chooseEnemyForAttack(Enemy *enemy);
     void setTowerLevel(int level);
+    void checkEnemyInRange();
+    //void disconnectEnemyForAttack();
 public slots:
     void shootWeapon();
 private:
@@ -66,7 +68,6 @@ class Tower3:public Tower
     Q_OBJECT
 public:
     Tower3(QPoint pos,MainWindow *game,const QPixmap &towpic3=QPixmap(":/image/tower3.png"));
-    void chooseEnemyForAttack(Enemy *enemy);
     void setTowerLevel(int level);
 public slots:
     void shootWeapon();

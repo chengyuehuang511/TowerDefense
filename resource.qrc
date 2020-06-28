@@ -1,31 +1,50 @@
 <RCC>
     <qresource prefix="/">
+        <file>image/bullet1.png</file>
+        <file>image/bullet2.png</file>
+        <file>image/bullet3.png</file>
+        <file>image/delete_tow.png</file>
+        <file>image/enemy.png</file>
         <file>image/enemy1.png</file>
+        <file>image/enemy2.png</file>
         <file>image/enemy3.png</file>
         <file>image/enemy4.png</file>
+        <file>image/enemyice1.png</file>
+        <file>image/enemyice2.png</file>
+        <file>image/enemyice3.png</file>
+        <file>image/enemyice4.png</file>
+        <file>image/ice.png</file>
+        <file>image/main.png</file>
         <file>image/map1.jpg</file>
         <file>image/map2.jpg</file>
+        <file>image/play.png</file>
+        <file>image/theme1.png</file>
+        <file>image/theme2.png</file>
         <file>image/tow_pos.png</file>
-        <file>image/tower1.png</file>
-        <file>image/bullet1.png</file>
-        <file>music/bgm.mp3</file>
-        <file>music/enemy_die.mp3</file>
-        <file>music/plant.mp3</file>
-        <file>music/wave--.wav</file>
-        <file>music/shoot.mp3</file>
         <file>image/tower_up.png</file>
-        <file>image/delete_tow.png</file>
         <file>image/tower_up1.png</file>
-        <file>music/tow_up.mp3</file>
-        <file>music/tow_delete.mp3</file>
+        <file>image/tower1.png</file>
         <file>image/tower1_button.png</file>
         <file>image/tower2.png</file>
         <file>image/tower2_button.png</file>
         <file>image/tower3.png</file>
         <file>image/tower3_button.png</file>
+        <file>music/bgm.mp3</file>
+        <file>music/enemy_die.mp3</file>
+        <file>music/plant.mp3</file>
         <file>music/pushbutton.mp3</file>
-        <file>image/bullet2.png</file>
-        <file>image/bullet3.png</file>
-        <file>image/enemy2.png</file>
+        <file>music/shoot.mp3</file>
+        <file>music/tow_delete.mp3</file>
+        <file>music/tow_up.mp3</file>
+        <file>music/wave--.wav</file>
+        <file>image/menu.png</file>
+        <file>image/gold.png</file>
+        <file>image/hp.png</file>
+        <file>image/wave.png</file>
+        <file>image/continue.png</file>
+        <file>image/pause.png</file>
+        <file>image/victory1.png</file>
+        <file>image/victory2.png</file>
+        <file>image/fail.png</file>
     </qresource>
 </RCC>

@@ -1,5 +1,6 @@
 #include "towerposition.h"
 #include "mainwindow.h"
+#include "menu.h"
 
 TowerPosition::TowerPosition(QPoint pos,const QPixmap &pospic):
     m_pos(pos),m_pospic(pospic),m_hastower(false)

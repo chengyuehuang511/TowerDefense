@@ -1,4 +1,5 @@
 #include "bullet.h"
+#include "menu.h"
 
 Bullet::Bullet(QPoint startPos, QPoint targetPoint, int damage, Enemy *target,
                MainWindow *game, const QPixmap &pic)
@@ -26,6 +27,11 @@ void Bullet::move()
     animation->setStartValue(m_startPos);
     animation->setEndValue(m_targetPos);
     connect(animation, SIGNAL(finished()), this, SLOT(hitTarget()));
+    if(m_game->m_gamePaused||m_game->m_gameEnded)
+    {
+        //m_game->removedBullet(this);
+        return;
+    }
     animation->start();
 }
 void Bullet::hitTarget()
@@ -46,7 +52,7 @@ void Bullet3::hitTarget()
 {
     if(m_game->enemyList().indexOf(m_target)!=-1)
     {
-        m_target->slowDown();
+        m_target->slowDown2();
         m_target->getDamage(m_damage);
     }
     m_game->removedBullet(this);

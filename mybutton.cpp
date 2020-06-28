@@ -1,4 +1,5 @@
 #include "mybutton.h"
+#include "menu.h"
 #include <QPixmap>
 
 MyButton::MyButton(QString pix):QPushButton(0)
